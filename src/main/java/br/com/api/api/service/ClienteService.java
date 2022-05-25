@@ -31,8 +31,16 @@ public class ClienteService {
 
     public Cliente getById(String id) {
         Optional<Cliente> cliente = clienteRepository.findById(id);
-        // TODO adicionar validação
+        // TODO adicionar validação -> não esquecer
         return cliente.get();
     }
 
+    public void deleteById (String id) {
+        clienteRepository.deleteById(id);
+    }
+
+    public Cliente updateById(Cliente cliente) {
+        Cliente updatedCliente = clienteRepository.save(cliente);
+        return updatedCliente;
+    }
 }
