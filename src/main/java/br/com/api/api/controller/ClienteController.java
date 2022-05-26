@@ -1,20 +1,18 @@
 package br.com.api.api.controller;
 
 import br.com.api.api.model.Cliente;
-import br.com.api.api.repository.ClienteRepository;
 import br.com.api.api.service.ClienteService;
-import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/cliente")
+@RequestMapping(value = "/")
 public class ClienteController {
 
     @Autowired
@@ -26,13 +24,11 @@ public class ClienteController {
         return cliente;
     }
 
-    @GetMapping // falta fazer funcionar a parte da lista
-    public List<Cliente> getClientList() {
-        List<Cliente> clienteList = clienteService.getAll();
-        return clienteList;
-
-        // quando não haver conteúdo, retornar 204
+    @GetMapping
+    public List<Cliente> getAllClientes() {
+        return clienteService.getAll();
     }
+        // quando não haver conteúdo, retornar 204
 
     @GetMapping(value = "/{id}")
     public Cliente getById(@PathVariable("id") String id) {
@@ -43,12 +39,12 @@ public class ClienteController {
     @PutMapping(value = "/update")
     public ResponseEntity <Cliente> clienteUpdate(@RequestBody Cliente cliente) {
         Cliente clienteUpdate = clienteService.updateById(cliente);
-        return new ResponseEntity("Student updated successfully", HttpStatus.OK);
+        return new ResponseEntity("Client updated successfully", HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteClienteById(@PathVariable String id){
         clienteService.deleteById(id);
-        return new ResponseEntity("Student deleted successfully", HttpStatus.OK);
+        return new ResponseEntity("Client deleted successfully", HttpStatus.OK);
     }
 }
