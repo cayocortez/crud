@@ -3,9 +3,9 @@ package br.com.api.api.service;
 import br.com.api.api.model.Cliente;
 import br.com.api.api.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,19 +24,29 @@ public class ClienteService {
         return save;
     }
 
-    public List<Cliente> getAll() {
-        List<Cliente> clientes = clienteRepository.findAll();
-        return clientes;
+    public ResponseEntity<List<Cliente>> getAll() {
+        Optional<List<Cliente>> clientes = Optional.of(clienteRepository.findAll());
+        if (clientes.isPresent()) {
+            return ResponseEntity.ok(clientes.get());
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    public Cliente getById(String id) {
-        Optional<Cliente> cliente = clienteRepository.findById(id);
-        // TODO adicionar validação -> não esquecer
-        return cliente.get();
+    public ResponseEntity<Cliente> getById(String id) {
+        Optional<Cliente> cliente = clienteRepository.findById(id); // findById retorna um objeto <Optional>, podendo ou não conter um objeto
+        if (cliente.isPresent()) {
+            return ResponseEntity.ok(cliente.get());
+        }
+        return ResponseEntity.notFound().build(); // retornando 404 not found quando o id é inválido
     }
 
-    public void deleteById (String id) {
-        clienteRepository.deleteById(id);
+    public ResponseEntity<?> deleteById (String id) { //retornando 404 not found quando o id é inválido
+        Optional<Cliente> optional = clienteRepository.findById(id);
+        if (optional.isPresent()) {
+            clienteRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     public Cliente updateById(Cliente cliente) {

@@ -7,9 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/")
@@ -19,21 +18,21 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping(value = "/create")
-    public Cliente create(@RequestBody Cliente clienteRequest) { //interpretar como JSON
+    public Cliente create(@RequestBody @Valid Cliente clienteRequest) { //interpretar como JSON
         Cliente cliente = clienteService.create(clienteRequest.getCpf(), clienteRequest.getNome());
         return cliente;
     }
 
     @GetMapping
-    public List<Cliente> getAllClientes() {
+    public ResponseEntity<List<Cliente>> getAllClientes() {
         return clienteService.getAll();
     }
-        // quando não haver conteúdo, retornar 204
+        // quando não haver conteúdo, retornar 404? atualmente está retornando vazio []
 
     @GetMapping(value = "/{id}")
-    public Cliente getById(@PathVariable("id") String id) {
+    public ResponseEntity<Cliente> getById(@PathVariable("id") String id) {
         return clienteService.getById(id);
-        // quando não haver conteúdo, retornar 204
+        // quando não haver conteúdo, retornar 404 -> está ok
     }
 
     @PutMapping(value = "/update")
@@ -44,7 +43,7 @@ public class ClienteController {
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteClienteById(@PathVariable String id){
-        clienteService.deleteById(id);
-        return new ResponseEntity("Client deleted successfully", HttpStatus.OK);
+        return clienteService.deleteById(id); // erro 404 funcionando
+        //return new ResponseEntity("Client deleted successfully", HttpStatus.OK); // mensagem está aparecendo para qualquer id, precisa devolver 404 para id inexistente
     }
 }
